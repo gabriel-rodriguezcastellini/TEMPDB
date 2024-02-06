@@ -1,3 +1,2 @@
 # TEMPDB
-## About the project:
-This is a project used to investigate some ways to enhance the performance of SQL Server.
+This is a project used to save some utilities that may be useful across different projects.
