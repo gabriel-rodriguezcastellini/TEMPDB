@@ -1,20 +1,21 @@
-﻿CREATE PROCEDURE GenerarCUIT 
+﻿CREATE PROCEDURE GenerarCUIT
+    @generatedCUIT NVARCHAR(20) OUTPUT
 AS
 BEGIN
     DECLARE @cuitPrefix INT
     DECLARE @cuitNumber VARCHAR(8)
-    DECLARE @cuit VARCHAR(11)
+    DECLARE @cuit NVARCHAR(11)
     DECLARE @suma INT
     DECLARE @i INT
     DECLARE @verificador INT
 
-    SET @verificador = 10  -- Inicializar el verificador con 10 para iniciar el bucle
+    SET @verificador = 10
 
-    WHILE @verificador = 10  -- Continuar recalculando hasta obtener un verificador diferente de 10
+    WHILE @verificador = 10
     BEGIN
         SET @cuitPrefix = (SELECT TOP 1 value FROM (VALUES (20), (24), (27), (30), (34)) AS prefix(value) ORDER BY NEWID())
         SET @cuitNumber = CAST((RAND() * 89999999 + 10000000) AS INT)
-        SET @cuit = CAST(@cuitPrefix AS VARCHAR) + @cuitNumber
+        SET @cuit = CAST(@cuitPrefix AS nvarchar) + @cuitNumber
         SET @suma = 0
         SET @i = 1
 
@@ -27,7 +28,6 @@ BEGIN
         SET @verificador = (11 - (@suma % 11)) % 11
     END
 
-    SELECT @cuit + CAST(@verificador AS VARCHAR) AS 'CUIT'
-END;
-
-EXEC GenerarCUIT;
+    SET @generatedCUIT = SUBSTRING(@cuit, 1, 2) + '-' + SUBSTRING(@cuit, 3, 8) + '-' + CAST(@verificador AS NVARCHAR) COLLATE Modern_Spanish_CI_AS
+END
+GO
